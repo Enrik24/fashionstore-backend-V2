@@ -1,0 +1,25 @@
+# ============================================================
+# Configuración de Nixpacks para FashionStore Backend
+# Nixpacks es el sistema de build que usa Railway
+# ============================================================
+
+# Configuración de Python
+[phases.setup]
+nixPkgs = ["python311", "postgresql"]
+aptPkgs = ["gcc", "libpq-dev"]
+
+# Fase de instalación de dependencias
+[phases.install]
+cmds = [
+    "pip install --upgrade pip",
+    "pip install -r requirements.txt"
+]
+
+# Comando de inicio
+[start]
+cmd = "bash start.sh"
+
+# Variables de entorno de build (opcionales)
+[variables]
+PYTHONUNBUFFERED = "1"
+PYTHONDONTWRITEBYTECODE = "1"

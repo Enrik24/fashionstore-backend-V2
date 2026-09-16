@@ -1,0 +1,29 @@
+# ============================================================
+# Configuración de Railway para FashionStore Backend
+# ============================================================
+
+[build]
+builder = "nixpacks"
+buildCommand = "pip install -r requirements.txt"
+
+[deploy]
+startCommand = "bash start.sh"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+
+# Variables de entorno (configurar en Railway Dashboard)
+# Estas son solo referencias - los valores reales se configuran en Railway
+# [deploy.env]
+# SECRET_KEY = "configurar_en_railway"
+# DATABASE_URL = "proporcionado_por_railway_postgres"
+# GROQ_API_KEY = "opcional"
+# CLOUDINARY_CLOUD_NAME = "opcional"
+# CLOUDINARY_API_KEY = "opcional"
+# CLOUDINARY_API_SECRET = "opcional"
+# STRIPE_API_KEY = "opcional"
+# STRIPE_PUBLISHABLE_KEY = "opcional"
+# PAYPAL_CLIENT_ID = "opcional"
+# PAYPAL_CLIENT_SECRET = "opcional"
+# CORS_ORIGINS = "https://tu-frontend.com"
