@@ -3,6 +3,7 @@ Modelos SQLAlchemy para la Gestión de Usuarios y Autenticación.
 Contiene: Usuario, Rol, Permiso, Cliente, Administrador, EncargadoSucursal, Cajero, Bitacora.
 """
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum, Text, Float
+from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import enum
@@ -112,7 +113,7 @@ class Cliente(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id", ondelete="CASCADE"), nullable=False, unique=True)
     nit_ci = Column(String(20), unique=True, nullable=False)
     direccion_envio = Column(String(500), nullable=True)
-    preferencias = Column(Text, nullable=True)  # JSON serializado como texto
+    preferencias = Column(JSON, nullable=True)  # Preferencias del cliente en formato JSON
     
     # Relaciones
     usuario = relationship("Usuario", back_populates="cliente")

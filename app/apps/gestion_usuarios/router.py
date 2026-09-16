@@ -381,17 +381,10 @@ async def obtener_perfil(
     db: AsyncSession = Depends(get_db)
 ):
     """Obtiene el perfil del cliente actual."""
-    import json
-    
     cliente = await usuario_services.ClienteService.get_cliente_by_usuario(db, current_user.id)
     
-    # Deserializar preferencias si existen
-    preferencias = None
-    if cliente.preferencias:
-        try:
-            preferencias = json.loads(cliente.preferencias)
-        except:
-            preferencias = None
+    # Las preferencias ya son dict nativamente con el tipo JSON
+    preferencias = cliente.preferencias if cliente.preferencias else None
     
     # Devolver perfil formateado
     return {
@@ -474,12 +467,10 @@ async def actualizar_preferencias(
     db: AsyncSession = Depends(get_db)
 ):
     """Actualiza las preferencias del cliente."""
-    import json
-    
     cliente = await usuario_services.ClienteService.get_cliente_by_usuario(db, current_user.id)
     
-    # Guardar preferencias como JSON
-    cliente.preferencias = json.dumps(datos)
+    # Guardar preferencias directamente como dict (PostgreSQL JSON nativo)
+    cliente.preferencias = datos
     await db.commit()
     
     return {"message": "Preferencias actualizadas exitosamente", "preferencias": datos}
