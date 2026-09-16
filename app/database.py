@@ -18,6 +18,7 @@ if settings.DB_SSL:
     connect_args["ssl"] = ssl_context
 
 # Crear el motor de base de datos asíncrono
+# echo controla los logs de SQLAlchemy (deshabilitado en producción para evitar rate limits)
 engine = create_async_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,
@@ -26,6 +27,8 @@ engine = create_async_engine(
     pool_size=10,
     max_overflow=20,
     connect_args=connect_args,
+    # Controlar nivel de logs en producción
+    logging_name="sqlalchemy.engine" if settings.DEBUG else None,
 )
 
 # Crear el factory de sesiones

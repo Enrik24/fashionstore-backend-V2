@@ -52,6 +52,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "FashionStore API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
+    ENVIRONMENT: str = "development"  # development, production
     CORS_ORIGINS: str = "http://localhost:4200,http://localhost:3000"
     
     class Config:
@@ -101,9 +102,18 @@ class Settings(BaseSettings):
                 f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
             )
         
-        # Activar SSL automáticamente si el host es de Supabase u otros proveedores cloud
-        if self.DATABASE_URL and ("supabase" in self.DATABASE_URL or "rds.amazonaws" in self.DATABASE_URL or "azure" in self.DATABASE_URL):
+        # Activar SSL automáticamente si el host es de Supabase, Neon, Railway u otros proveedores cloud
+        # Railway PostgreSQL puede requerir SSL según configuración
+        if self.DATABASE_URL and ("supabase" in self.DATABASE_URL or "rds.amazonaws" in self.DATABASE_URL or "azure" in self.DATABASE_URL or "neon.tech" in self.DATABASE_URL or "railway.app" in self.DATABASE_URL):
             self.DB_SSL = True
+        
+        # Si el DATABASE_URL incluye sslmode=require, activar SSL
+        if self.DATABASE_URL and "sslmode=require" in self.DATABASE_URL:
+            self.DB_SSL = True
+        
+        # Deshabilitar DEBUG en producción para reducir logs excesivos
+        if self.ENVIRONMENT == "production":
+            self.DEBUG = False
     
     @property
     def cors_origins_list(self) -> List[str]:
