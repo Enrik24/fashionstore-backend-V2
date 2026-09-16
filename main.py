@@ -34,10 +34,9 @@ async def lifespan(app: FastAPI):
     # Inicio de la aplicación
     logger.info("Iniciando FashionStore API...")
     
-    # Crear tablas en la base de datos
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("Tablas de base de datos creadas")
+    # En producción, las migraciones deben ejecutarse con Alembic
+    # NO usamos create_all() para evitar conflictos con ENUMs y estructuras existentes
+    logger.info("Conectado a la base de datos (usar Alembic para migraciones)")
     
     # Crear datos iniciales
     from sqlalchemy.ext.asyncio import AsyncSession
