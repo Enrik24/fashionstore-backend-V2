@@ -20,6 +20,7 @@ echo -e "${BLUE}========================================${NC}"
 # Detectar puerto (Railway/Render usa $PORT, local usa 8000)
 PORT=${PORT:-8000}
 echo -e "\n${YELLOW}[INFO] Puerto configurado: $PORT${NC}"
+echo -e "${YELLOW}[INFO] Host configurado: 0.0.0.0${NC}"
 
 # ============================================================
 # Paso 1: Ejecutar migraciones con Alembic (con timeout)
@@ -99,9 +100,12 @@ echo -e "${GREEN}[✓] Variables de entorno verificadas${NC}\n"
 # Iniciar servidor con exec para que reciba señales correctamente
 exec gunicorn main:app \
     --worker-class uvicorn.workers.UvicornWorker \
-    --bind "0.0.0.0:$PORT" \
+    --bind "0.0.0.0:${PORT}" \
     --workers 2 \
+    --worker-connections 1000 \
     --timeout 120 \
+    --keepalive 5 \
     --access-logfile - \
     --error-logfile - \
-    --log-level info
+    --log-level info \
+    --preload
