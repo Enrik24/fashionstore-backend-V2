@@ -63,17 +63,19 @@ else
 fi
 
 # ============================================================
-# Paso 2: Ejecutar seed de datos iniciales
+# Paso 2: Ejecutar seed de datos iniciales (DESHABILITADO)
 # ============================================================
-echo -e "\n${GREEN}[2/3] Ejecutando seed de datos iniciales...${NC}"
+# echo -e "\n${GREEN}[2/3] Ejecutando seed de datos iniciales...${NC}"
 
 # Ejecutar seed con timeout de 60 segundos y manejo de errores
-if run_with_timeout 60 python seed.py; then
-    echo -e "${GREEN}[✓] Seed ejecutado correctamente${NC}"
-else
-    # El seed puede fallar si los datos ya existen, lo cual es aceptable
-    echo -e "${YELLOW}[!] Advertencia: Seed completado con errores (esto es normal si los datos ya existen)${NC}"
-fi
+# if run_with_timeout 60 python seed.py; then
+#     echo -e "${GREEN}[✓] Seed ejecutado correctamente${NC}"
+# else
+#     # El seed puede fallar si los datos ya existen, lo cual es aceptable
+#     echo -e "${YELLOW}[!] Advertencia: Seed completado con errores (esto es normal si los datos ya existen)${NC}"
+# fi
+
+echo -e "\n${YELLOW}[2/3] Seed deshabilitado - ejecutar manualmente si es necesario${NC}"
 
 # ============================================================
 # Paso 3: Iniciar la aplicación con Gunicorn
@@ -97,7 +99,15 @@ fi
 
 echo -e "${GREEN}[✓] Variables de entorno verificadas${NC}\n"
 
+# Debug: Mostrar configuración final
+echo -e "${YELLOW}[DEBUG] Configuración final:${NC}"
+echo -e "${YELLOW}  - Puerto: ${PORT}${NC}"
+echo -e "${YELLOW}  - Workers: 2${NC}"
+echo -e "${YELLOW}  - Bind: 0.0.0.0:${PORT}${NC}"
+echo -e "${YELLOW}  - Worker class: uvicorn.workers.UvicornWorker${NC}\n"
+
 # Iniciar servidor con exec para que reciba señales correctamente
+echo -e "${GREEN}Ejecutando Gunicorn...${NC}\n"
 exec gunicorn main:app \
     --worker-class uvicorn.workers.UvicornWorker \
     --bind "0.0.0.0:${PORT}" \
